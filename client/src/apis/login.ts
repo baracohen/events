@@ -1,4 +1,5 @@
 import axios from "axios";
+import { storeTokenInSessionStorage } from "./utils";
 
 export const UserLogin = async (
   username: string,
@@ -14,6 +15,7 @@ export const UserLogin = async (
     console.log(data);
     const response = await axios.post(url, data);
     console.log(response.data); // do something with the response data
+    storeTokenInSessionStorage(response.data.access_token);
     return response.data.access_token;
   } catch (error) {
     console.error(error);

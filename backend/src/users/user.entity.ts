@@ -1,5 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import * as bcrypt from "bcrypt";
+import Event from "src/events/entities/event.entity";
 
 @Entity()
 class User {
@@ -14,6 +21,10 @@ class User {
 
   @Column()
   password: string;
+
+  @ManyToMany(() => Event, (event) => event.id)
+  @JoinColumn()
+  events: Event[];
 
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);

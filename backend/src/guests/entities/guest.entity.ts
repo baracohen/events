@@ -1,5 +1,5 @@
-import Event from 'src/events/entities/event.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import Event from "src/events/entities/event.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 class Guest {
@@ -14,6 +14,12 @@ class Guest {
 
   @Column({ nullable: true })
   side: string;
+
+  @Column({ nullable: true })
+  attending: string;
+
+  @Column({ nullable: true })
+  attendingNumber: number;
 
   @ManyToOne(() => Event, (event) => event.guests)
   event: Event;

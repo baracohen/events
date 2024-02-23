@@ -9,7 +9,6 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import theme from '../../theme';
 import { Button, TextField } from '@material-ui/core';
 import { Stack } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
@@ -20,17 +19,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import { useForm } from 'react-hook-form';
+import { EventFormData } from '../../interfaces/event.interface';
+import { CreateEvent } from '../../apis/events';
+
 
 const events: any[] = [
 
 ];
 
-interface FormData {
-  eventName: string;
-  eventDate: string;
-  eventLocation: string;
-  eventImage: string;
-}
 
 
 const Transition = React.forwardRef(function Transition(
@@ -49,10 +45,10 @@ const SidebarMenu = ({}) => {
   const handleClose = () => {
     setOpen(false);
   };
-  const { register, handleSubmit } =  useForm<FormData>();
+  const { register, handleSubmit } =  useForm<EventFormData>();
   
-  const onSubmit = (data: FormData) => {
-    // handle form submission here
+  const onSubmit = (data: EventFormData) => {
+    const event = CreateEvent(data)
   };
   
   const handleOpen = () => {
@@ -66,6 +62,7 @@ const SidebarMenu = ({}) => {
 
   const addEventModal =() => {
       return (
+
         <Dialog
         open={openModal}
         TransitionComponent={Transition}
@@ -74,26 +71,31 @@ const SidebarMenu = ({}) => {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle>{"Add new event"}</DialogTitle>
-        <DialogContent>
-          <TextField
+        <DialogContent  sx={{gap:10}}>
+        <TextField
           fullWidth
           label="Event name"
-          {...register('eventName', { required: true })}
+          {...register('title', { required: true })}
         />
         <TextField
           fullWidth
-          label="Event date"
-          {...register('eventDate', { required: true })}
+          label="Event description"
+          {...register('description', { required: true })}
         />
         <TextField
           fullWidth
           label="Location"
-          {...register('eventLocation', { required: true })}
+          {...register('location', { required: true })}
         />
         <TextField
+          id="date"
+          label="EventDate"
+          type="date"
           fullWidth
-          label="Image"
-          {...register('eventImage', { required: true })}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          {...register('date', { required: true })}
         />
         </DialogContent>
         <DialogActions>
