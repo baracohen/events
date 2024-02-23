@@ -1,14 +1,14 @@
 import {
   Column,
   Entity,
-  JoinColumn,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import User from 'src/users/user.entity';
-import Guest from 'src/guests/entities/guest.entity';
-import Task from 'src/tasks/entities/task.entity';
+} from "typeorm";
+import User from "src/users/user.entity";
+import Guest from "src/guests/entities/guest.entity";
+import Task from "src/tasks/entities/task.entity";
 
 @Entity()
 class Event {
@@ -27,8 +27,8 @@ class Event {
   @Column()
   date: Date;
 
-  @ManyToMany(() => User, (user) => user.id)
-  @JoinColumn()
+  @ManyToMany(() => User, (user) => user.events) // Adjust this line
+  @JoinTable() // Use @JoinTable() instead of @JoinColumn()
   users: User[];
 
   @OneToMany(() => Guest, (guest) => guest.event)

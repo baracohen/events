@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import CreateEventDto from "./dto/create-event.dto";
 import { UpdateEventDto } from "./dto/update-event.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -10,18 +10,37 @@ import { UsersService } from "src/users/users.service";
 export class EventsService {
   constructor(
     @InjectRepository(Event)
-    private readonly eventsRepository: Repository<Event>,
+    private eventsRepository: Repository<Event>,
     private readonly userService: UsersService
   ) {}
 
   async create(createEventDto: CreateEventDto) {
-    const newEvent = await this.eventsRepository.create(createEventDto);
-    const users = await this.userService.getUserById(createEventDto.userId);
-    newEvent.users = [users];
-    await this.eventsRepository.save(newEvent);
-    console.log(newEvent.users);
+    // Fetch the user associated with the event
+    const user = await this.userService.getUserById(createEventDto.userId);
 
-    return newEvent;
+    // If the user doesn't exist, handle the error
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    // Create a new event instance
+    const newEvent = this.eventsRepository.create(createEventDto);
+
+    // Assign the user to the event's users property
+    newEvent.users = [user];
+
+    // Use TypeORM transaction to ensure data consistency
+    return this.eventsRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        // Save the event to the database
+        const savedEvent = await transactionalEntityManager.save(newEvent);
+
+        // Log the users associated with the event (optional)
+        console.log(savedEvent.users);
+
+        return savedEvent;
+      }
+    );
   }
 
   findAll() {
