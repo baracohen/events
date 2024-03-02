@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TablePagination, IconButton } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TablePagination, IconButton, Stack, Grid } from '@mui/material';
 import Header from '../componentsHeader/header';
 import Avatar from '@mui/material/Avatar';
 import PersonIcon from '@mui/icons-material/Person';
@@ -14,7 +14,7 @@ import DeleteUserModal from './deleteUserModal';
 import EditUserModal from './editUserModal';
 import AddIcon from '@mui/icons-material/Add';
 import { Guest } from '../../interfaces/guest.interface';
-import { SearchTextField, StyledStatusTag, TableWrapper } from './styledComponents';
+import { SearchTextField, StyledButton, StyledStatusTag, TableWrapper } from './styledComponents';
 
 type GuestListProps = {
   guests: Guest[];
@@ -92,6 +92,7 @@ const GuestList: React.FC<GuestListProps> = ({ guests, rowsPerPage = 13 }) => {
       <Header name='Guests' Component={<ExcelUploader onUpload={()=>{}} />} />
 
       <TableWrapper>
+        <Grid justifyContent={'space-between'} display={'flex'} width={'100%'}>
         <SearchTextField label="Search by name" variant="outlined" InputProps={{
             endAdornment: (
             <InputAdornment position="end">
@@ -101,10 +102,11 @@ const GuestList: React.FC<GuestListProps> = ({ guests, rowsPerPage = 13 }) => {
             </InputAdornment>
             )
         }}onChange={handleSearch} value={query} />
-          <Button onClick={ ()=> setOpenEditUserModal(true)}>
+        <StyledButton onClick={ ()=> setOpenEditUserModal(true)}>
+            <AddIcon />
             Add Guest
-          <AddIcon />
-        </Button>
+        </StyledButton>
+        </Grid>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
