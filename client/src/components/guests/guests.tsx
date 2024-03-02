@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TablePagination, IconButton } from '@mui/material';
 import Header from '../componentsHeader/header';
-import styled from 'styled-components';
 import Avatar from '@mui/material/Avatar';
 import PersonIcon from '@mui/icons-material/Person';
 import ExcelUploader from './uploadExcel';
@@ -13,65 +12,20 @@ import { TextField, InputAdornment } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import DeleteUserModal from './deleteUserModal';
 import EditUserModal from './editUserModal';
-
-type Guest = {
-  id: number;
-  name: string;
-  mobileNumber: string;
-  status: string;
-};
+import AddIcon from '@mui/icons-material/Add';
+import { Guest } from '../../interfaces/guest.interface';
+import { SearchTextField, StyledStatusTag, TableWrapper } from './styledComponents';
 
 type GuestListProps = {
   guests: Guest[];
   rowsPerPage?: number;
 };
 
-const TableWrapper = styled.div`
-  padding: 24px;
-`;
-type StatusTagProps = {
-  status: string;
-};
-const StyledStatusTag = styled.div<StatusTagProps>`
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-  color: white;
-  background-color: ${(props) => {
-    switch (props.status) {
-      case 'Attending':
-        return 'green';
-      case 'Maybe':
-        return 'orange';
-      case 'Not attending':
-        return 'red';
-      default:
-        return 'gray';
-    }
-  }};
-`;
-
-const SearchTextField = styled(TextField)`
-  && {
-    margin-bottom:24px;
-    width: 300px;
-
-    & label {
-      font-weight: bold;
-    }
-
-    & input {
-      font-size: 14px;
-    }
-  }
-`;
-
 
 const GuestList: React.FC<GuestListProps> = ({ guests, rowsPerPage = 13 }) => {
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState('');
-  const [activeGuest, setActiveGuest] = useState<Guest>();
+  const [activeGuest, setActiveGuest] = useState<Guest | undefined>();
   const [openDeleteUserModal, setOpenDeleteUserModal] = useState<boolean>(false);
   const [openEditUserModal, setOpenEditUserModal] = useState<boolean>(false);
   
@@ -82,9 +36,11 @@ const GuestList: React.FC<GuestListProps> = ({ guests, rowsPerPage = 13 }) => {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
+  
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
+  
   const stringToColor = (string: string) => {
     let hash = 0;
     let i;
@@ -96,6 +52,7 @@ const GuestList: React.FC<GuestListProps> = ({ guests, rowsPerPage = 13 }) => {
     }
     return `#${(hash & 0xffffff).toString(16).padStart(6, '0')}`;
   };
+
   const searchByName = (query: string) => {
     const filteredGuests = guests.filter(guest =>
       guest.name.toLowerCase().includes(query.toLowerCase())
@@ -107,10 +64,22 @@ const GuestList: React.FC<GuestListProps> = ({ guests, rowsPerPage = 13 }) => {
     setActiveGuest(guest)
     setOpenDeleteUserModal(true)
   }
+  
+  const onCloseDeleteGuest = ()=>{
+    setActiveGuest(undefined)
+    setOpenDeleteUserModal(false)
+  }
+  
   const onEditGuest = (guest:Guest)=>{
     setActiveGuest(guest)
     setOpenEditUserModal(true)
   }
+
+  const onCloseEditGuest = ()=>{
+    setActiveGuest(undefined)
+    setOpenEditUserModal(false)
+  }
+
 
   
   const startIndex = page * rowsPerPage;
@@ -132,6 +101,10 @@ const GuestList: React.FC<GuestListProps> = ({ guests, rowsPerPage = 13 }) => {
             </InputAdornment>
             )
         }}onChange={handleSearch} value={query} />
+          <Button onClick={ ()=> setOpenEditUserModal(true)}>
+            Add Guest
+          <AddIcon />
+        </Button>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -151,11 +124,11 @@ const GuestList: React.FC<GuestListProps> = ({ guests, rowsPerPage = 13 }) => {
                       {guest.name}
                   </TableCell>
                   <TableCell >
-                      Groom
+                    {guest.side}
                   </TableCell>
                   <TableCell>{guest.mobileNumber}</TableCell>
                   <TableCell>
-                    <StyledStatusTag status={guest.status}>{guest.status}</StyledStatusTag>
+                    <StyledStatusTag status={guest.attendingStatus}>{guest.attendingStatus}</StyledStatusTag>
                   </TableCell>
                   <TableCell >
                     <IconButton size="small" title='send an email' color='success' onClick={() => console.log(`Edit guest ${guest.id}`)}>
@@ -207,8 +180,8 @@ const GuestList: React.FC<GuestListProps> = ({ guests, rowsPerPage = 13 }) => {
             },
           }}
         />
-        <DeleteUserModal name={activeGuest?.name} openModal={openDeleteUserModal} handleClose={()=>{setOpenDeleteUserModal(false)}} handleSubmit={()=>{}}  />
-        <EditUserModal guest={activeGuest} openModal={openEditUserModal} handleClose={()=>{setOpenEditUserModal(false)}} />
+        <DeleteUserModal name={activeGuest?.name} openModal={openDeleteUserModal} handleClose={onCloseDeleteGuest} handleSubmit={()=>{}}  />
+        <EditUserModal key={activeGuest?.id} guest={activeGuest} openModal={openEditUserModal} handleClose={onCloseEditGuest} />
       </TableWrapper>
     </>
   );

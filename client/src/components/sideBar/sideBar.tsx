@@ -22,12 +22,50 @@ import { useForm } from 'react-hook-form';
 import { EventFormData } from '../../interfaces/event.interface';
 import { CreateEvent } from '../../apis/events';
 
+import styled, { keyframes } from 'styled-components';
 
 const events: any[] = [
 
 ];
 
+const NeonButton = styled(Button)`
+  background-color: black;
+  line-height: 42px;
+  padding: 0;
+  border: none;
 
+  &:before,
+  &:after {
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    background: #21ebff;
+    width:0;
+      box-shadow:  0 0 5px #21ebff,  0 0 5px #21ebff inset;
+    transition:400ms ease all;
+  }
+
+  &:before {
+    top: 0;
+  }
+
+  &:after {
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+
+  &:hover:before,
+  &:hover:after {
+    background: transparent;
+    color: #21ebff;
+    width:100%;
+    transition:800ms ease all;
+  }
+`;
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -151,8 +189,7 @@ const SidebarMenu = ({}) => {
         )
         : 
         <Stack sx={{ width: "90%", m:1, position: "absolute", bottom: 0}}>
-
-          <Button onClick={()=>{setOpenModal(true)}}>Add event</Button>
+          <NeonButton onClick={()=>{setOpenModal(true)}}>Add event</NeonButton>
           {addEventModal()}
         </Stack>
         }

@@ -16,6 +16,8 @@ import SidebarMenu from './components/sideBar/sideBar';
 import { useProSidebar } from 'react-pro-sidebar';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Guest } from './interfaces/guest.interface';
+import { GuestStatus } from './enums/guestStatus.enum';
 
 function App() {
   const { collapsed } = useProSidebar();
@@ -25,32 +27,29 @@ function App() {
   useEffect(() => {
     setIsCollapsed(collapsed);
   }, [collapsed]);
-  type Guest = {
-    id: number;
-    name: string;
-    mobileNumber: string;
-    status: string;
-  };
+
+  
   const guests: Guest[] = [
-    { id: 1, name: 'John Doe', mobileNumber: '123-456-7890', status: 'Attending' },
-    { id: 2, name: 'cds', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 3, name: 'bgr', mobileNumber: '234-567-8901', status: 'Maybe' },
-    { id: 4, name: ' gfre', mobileNumber: '234-567-8901', status: 'Maybe' },
-    { id: 5, name: ',hylt;', mobileNumber: '234-567-8901', status: 'Maybe' },
-    { id: 6, name: 'hyret,l;', mobileNumber: '234-567-8901', status: 'Maybe' },
-    { id: 7, name: 'v,el;', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 8, name: ',l;yt', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 9, name: 'mklrye', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 10, name: 'mbklr', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 11, name: 'vmfkel', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 12, name: 'dcmsakl', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 13, name: 'vfd Doe', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 14, name: 'vfds Doe', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 15, name: ' brt Doe', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 16, name: 're Doe', mobileNumber: '234-567-8901', status: 'Not attending' },
-    { id: 17, name: 'ewc Doe', mobileNumber: '234-567-8901', status: 'Not attending' },
+    { id: 1, name: 'John Doe', side: 'Groom', mobileNumber: '123-456-7890', attendingStatus: GuestStatus.Attending },
+    { id: 2, name: 'cds', side: 'Bride', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 3, name: 'bgr', side: 'Groom', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.Maybe },
+    { id: 4, name: 'gfre', side: 'Bride', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.Maybe },
+    { id: 5, name: 'hylt', side: 'Groom', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.Maybe },
+    { id: 6, name: 'hyret,l', side: 'Bride', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.Maybe },
+    { id: 7, name: 'v,el', side: 'Groom', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 8, name: 'l;yt', side: 'Bride', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 9, name: 'mklrye', side: 'Groom', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 10, name: 'mbklr', side: 'Bride', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 11, name: 'vmfkel', side: 'Groom', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 12, name: 'dcmsakl', side: 'Bride', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 13, name: 'vfd Doe', side: 'Groom', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 14, name: 'vfds Doe', side: 'Bride', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 15, name: 'brt Doe', side: 'Groom', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 16, name: 're Doe', side: 'Bride', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
+    { id: 17, name: 'ewc Doe', side: 'Groom', mobileNumber: '234-567-8901', attendingStatus: GuestStatus.NotAttending },
     // Add more guests as needed
   ];
+  
   const showSidebar = location.pathname === '/Dashboard' ||
                       location.pathname === '/Guests' ||
                       location.pathname === '/EventManagment' ||
